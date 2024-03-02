@@ -74,7 +74,7 @@ class Player:
         elif track_id == 'prev':
             self.cmd(0x02)
         elif isinstance(track_id, int):
-            self.cmd(0x03, track_id)
+            self.cmd(0x12, track_id)
 
     def is_busy(self):
         return self.pin_busy.value() == 0
