@@ -1,6 +1,7 @@
 import machine
 from machine import Pin
 import utime
+from utime import sleep
 import json
 
 DFPLAYER_UART = machine.UART(1, baudrate=9600, tx=17, rx=16)
@@ -23,7 +24,7 @@ def send_command(command, parameter=0):
     DFPLAYER_UART.write(query)
 
 def play_mp3(track_id):
-    send_command(0x03, track_id)  
+    send_command(0x12, track_id)  
 
 def volume_up(pin):
     global volume, last_volume_up_press
@@ -43,9 +44,38 @@ def volume_down(pin):
         send_command(0x05)
         save_volume(volume)
 
+
 def next_song(pin):
-    # Define next_song functionality
-    pass
+    global last_next_song_press, track_id
+    current_time = utime.ticks_ms()
+    if current_time - last_next_song_press > debounce_delay:
+        last_next_song_press = current_time
+        next_track_id = track_id + 1
+        if next_track_id > 10:
+            next_track_id = 1
+        save_track_id(next_track_id)
+        send_command(0x16)
+        utime.sleep_ms(100)
+        machine.reset() 
+            
+def save_track_id(track_id):
+    try:
+        with open("track_id.json", 'w') as f:
+            json.dump({'track_id': track_id}, f)
+    except Exception as e:
+        pass
+            
+def load_track_id():
+    try:
+        with open("track_id.json", 'r') as f:
+            data = json.load(f)
+            track_id = data.get('track_id', 1)
+            if isinstance(track_id, int):
+                return track_id
+            else:
+                return 1  
+    except Exception as e:
+        return 1  
 
 def save_volume(volume):
     try:
@@ -58,16 +88,27 @@ def load_volume():
     try:
         with open("volume.json", 'r') as f:
             data = json.load(f)
-            volume = data.get('volume', 15)  
-            return volume
+            volume = data.get('volume', 15) 
+            if isinstance(volume, int): 
+                return volume
+            else:
+                return 15
     except Exception as e:
         return 15  
     
 def main():
-    global volume
+    global volume, track_id
     volume = load_volume()
-    track_id = 1 
+    send_command(0x06, volume)
+    track_id = load_track_id()
     play_mp3(track_id)
+    
+   
+    start_time = utime.time()
+    while utime.time() - start_time < 15:
+        pass
+    
+    send_command(0x16)  #stop playback
 
 # Initialize pins and interrupts
 button_volume_up.irq(trigger=Pin.IRQ_FALLING, handler=volume_up)
