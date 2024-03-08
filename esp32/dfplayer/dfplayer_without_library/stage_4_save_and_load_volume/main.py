@@ -4,8 +4,8 @@ import utime
 from utime import sleep
 import json
 
+
 DFPLAYER_UART = machine.UART(1, baudrate=9600, tx=17, rx=16)
-DFPLAYER_BUSY = machine.Pin(5, machine.Pin.IN)
 
 max_volume = 30
 volume = 0
@@ -19,12 +19,12 @@ last_volume_down_press = 0
 last_next_song_press = 0
 debounce_delay = 200
 
+
 def send_command(command, parameter=0):
     query = bytes([0x7E, 0xFF, 0x06, command, 0x00, 0x00, parameter, 0xEF])
     DFPLAYER_UART.write(query)
+    utime.sleep(0.1)
 
-def play_mp3(track_id):
-    send_command(0x12, track_id)  
 
 def volume_up(pin):
     global volume, last_volume_up_press
@@ -33,7 +33,8 @@ def volume_up(pin):
         last_volume_up_press = current_time
         volume = min(volume + 1, max_volume)
         send_command(0x04)
-        save_volume(volume)    
+        save_volume(volume)
+
 
 def volume_down(pin):
     global volume, last_volume_down_press
@@ -45,70 +46,43 @@ def volume_down(pin):
         save_volume(volume)
 
 
-def next_song(pin):
-    global last_next_song_press, track_id
-    current_time = utime.ticks_ms()
-    if current_time - last_next_song_press > debounce_delay:
-        last_next_song_press = current_time
-        next_track_id = track_id + 1
-        if next_track_id > 10:
-            next_track_id = 1
-        save_track_id(next_track_id)
-        send_command(0x16)
-        utime.sleep_ms(100)
-        machine.reset() 
-            
-def save_track_id(track_id):
-    try:
-        with open("track_id.json", 'w') as f:
-            json.dump({'track_id': track_id}, f)
-    except Exception as e:
-        pass
-            
-def load_track_id():
-    try:
-        with open("track_id.json", 'r') as f:
-            data = json.load(f)
-            track_id = data.get('track_id', 1)
-            if isinstance(track_id, int):
-                return track_id
-            else:
-                return 1  
-    except Exception as e:
-        return 1  
-
 def save_volume(volume):
     try:
-        with open("volume.json", 'w') as f:
-            json.dump({'volume': volume}, f)
+        with open("volume.json", "w") as f:
+            json.dump({"volume": volume}, f)
     except Exception as e:
         pass
+
 
 def load_volume():
     try:
-        with open("volume.json", 'r') as f:
+        with open("volume.json", "r") as f:
             data = json.load(f)
-            volume = data.get('volume', 15) 
-            if isinstance(volume, int): 
+            volume = data.get("volume", 15)
+            if isinstance(volume, int):
                 return volume
             else:
                 return 15
     except Exception as e:
-        return 15  
-    
+        return 15
+
+
+def next_song(pin):
+    global last_next_song_press
+    current_time = utime.ticks_ms()
+    if current_time - last_next_song_press > debounce_delay:
+        last_next_song_press = current_time
+        send_command(0x01)
+
+
 def main():
-    global volume, track_id
-    volume = load_volume()
-    send_command(0x06, volume)
-    track_id = load_track_id()
-    play_mp3(track_id)
-    
-   
-    start_time = utime.time()
-    while utime.time() - start_time < 15:
-        pass
-    
-    send_command(0x16)  #stop playback
+    global volume
+    volume = load_volume()  # load last volume status
+    send_command(0x06, volume)  # set volume
+    utime.sleep(0.3)
+    send_command(0x0D)  # start playback
+    send_command(0x16)  # stop playback
+
 
 # Initialize pins and interrupts
 button_volume_up.irq(trigger=Pin.IRQ_FALLING, handler=volume_up)
