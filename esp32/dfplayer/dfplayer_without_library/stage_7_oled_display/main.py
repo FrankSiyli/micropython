@@ -26,17 +26,17 @@ last_stop_song_press = 0
 debounce_delay = 200
 
 
-def update_display(volume, track_id):
-    oled.fill(0)
-    oled.text("Volume: {}".format(volume), 25, 20)
-    oled.text("Track: {}".format(track_id), 28, 40)
-    oled.show()
-
-
 def send_command(command, parameter=0):
     query = bytes([0x7E, 0xFF, 0x06, command, 0x00, 0x00, parameter, 0xEF])
     DFPLAYER_UART.write(query)
     utime.sleep(0.1)
+
+
+def update_display(volume, track_id):
+    oled.fill(0)
+    oled.text("Volume: {}".format(volume), 25, 20)
+    oled.text("Track: {}".format(track_id), 29, 40)
+    oled.show()
 
 
 def volume_up(pin):
@@ -91,7 +91,6 @@ def next_song(pin):
             next_track_id = 1
         save_track_id(next_track_id)
         send_command(0x16)
-        utime.sleep(0.1)
         machine.reset()
 
 
@@ -101,7 +100,6 @@ def stop_song(pin):
     if current_time - last_stop_song_press > debounce_delay:
         last_stop_song_press = current_time
         send_command(0x16)
-        utime.sleep(0.3)
         oled.fill(0)
         oled.show()
 
@@ -127,6 +125,15 @@ def load_track_id():
         return 1
 
 
+def is_playing():
+    send_command(0x42)
+    response = DFPLAYER_UART.read(10)
+    if response is not None:
+        if len(response) >= 4 and response[3] == 0x3D:
+            oled.fill(0)
+            oled.show()
+
+
 def main():
     global volume, track_id
     volume = load_volume()
@@ -134,10 +141,14 @@ def main():
     utime.sleep(0.1)
     send_command(0x06, volume)
     utime.sleep(0.1)
-    send_command(0x03, track_id)
-    utime.sleep(0.3)
     update_display(volume, track_id)
+    send_command(0x03, track_id)
+
     send_command(0x16)
+
+    while True:
+        is_playing()
+        utime.sleep(2)
 
 
 # Initialize pins and interrupts
