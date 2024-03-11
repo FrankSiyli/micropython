@@ -17,6 +17,7 @@ DFPLAYER_UART = machine.UART(1, baudrate=9600, tx=17, rx=16)
 max_volume = 30
 volume = 0
 track_id = 1
+debounce_delay = 250
 
 button_volume_up = Pin(13, Pin.IN, Pin.PULL_UP)
 button_volume_down = Pin(15, Pin.IN, Pin.PULL_UP)
@@ -27,7 +28,6 @@ last_volume_up_press = 0
 last_volume_down_press = 0
 last_next_song_press = 0
 last_stop_song_press = 0
-debounce_delay = 300
 
 tf = esp32.raw_temperature()
 tc = (tf - 32.0) / 1.8
@@ -41,7 +41,7 @@ def send_command(command, parameter=0):
 
 def update_display(volume, track_id, voltage):
     oled.fill(0)
-    oled.text("CPU:{1:1.1f}C".format(tf, tc), 0, 0)
+    oled.text("CPU:{1:1.1f}C".format(tf, tc), 0, 2)
     oled.text("Volume: {}".format(volume), 30, 30)
     oled.text("Track: {}".format(track_id), 35, 50)
     if voltage >= 3.8:
@@ -168,7 +168,6 @@ def is_playing():
 
 
 def main():
-    global volume, track_id
     volume = load_volume()
     track_id = load_track_id()
     voltage = read_battery_voltage()
