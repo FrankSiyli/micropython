@@ -5,6 +5,14 @@ from utime import sleep
 import json
 import ssd1306
 import esp32
+import network
+import espnow
+
+sta = network.WLAN(network.STA_IF)
+sta.active(True)
+
+esp = espnow.ESPNow()
+esp.active(True)
 
 i2c = I2C(0, sda=Pin(4), scl=Pin(0))
 oled = ssd1306.SSD1306_I2C(128, 64, i2c)

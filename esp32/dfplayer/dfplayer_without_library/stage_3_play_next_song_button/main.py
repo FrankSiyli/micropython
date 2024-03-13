@@ -51,10 +51,17 @@ def next_song(pin):
 
 
 def main():
-    send_command(0x06, volume)  # set volume
+    send_command(0x06, volume)
     utime.sleep(0.5)
-    send_command(0x0D)  # start playback
-    send_command(0x16)  # stop playback
+    send_command(0x0D)
+    # Wait for the song to finish playing
+    while True:
+        is_playing_response = is_playing()
+        if not is_playing_response:
+            # Song has finished playing, send stop command
+            send_command(0x16)
+            break
+        utime.sleep(1)
 
 
 # Initialize pins and interrupts
