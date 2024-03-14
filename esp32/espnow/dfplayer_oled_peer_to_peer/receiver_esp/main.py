@@ -1,7 +1,7 @@
 import network
 import espnow
 import machine
-from machine import Pin, I2C
+from machine import Pin, I2C, ADC
 import utime
 from utime import sleep
 import json
@@ -9,6 +9,9 @@ import ssd1306
 
 i2c = I2C(0, sda=Pin(4), scl=Pin(0))
 oled = ssd1306.SSD1306_I2C(128, 64, i2c)
+
+adc = ADC(Pin(34))
+adc.atten(ADC.ATTN_11DB)
 
 DFPLAYER_UART = machine.UART(1, baudrate=9600, tx=17, rx=16)
 
@@ -40,10 +43,9 @@ dfplayer_busy = Pin(DFPLAYER_BUSY_PIN, Pin.IN)
 
 
 def dfplayer_busy_handler(pin):
-    utime.sleep(1)
-    print("pin.value:", pin.value())
+    utime.sleep(0.2)
     if not pin.value():
-        pass  # Do nothing
+        pass
     else:
         oled.fill(0)
         oled.show()
@@ -54,11 +56,34 @@ def send_command(command, parameter=0):
     DFPLAYER_UART.write(query)
 
 
-def update_display(volume, track_id):
+def update_display(volume, track_id, voltage):
     oled.fill(0)
     oled.text("Volume: {}".format(volume), 30, 30)
     oled.text("Track: {}".format(track_id), 35, 50)
+    if voltage >= 3.8:
+        oled.fill_rect(105, 0, 25, 10, 1)
+        oled.fill_rect(105, 0, 1, 10, 1)
+        oled.fill_rect(101, 3, 4, 4, 1)
+    elif voltage >= 3.5:
+        oled.fill_rect(117, 0, 15, 10, 1)
+        oled.fill_rect(105, 0, 25, 1, 1)
+        oled.fill_rect(105, 10, 25, 1, 1)
+        oled.fill_rect(105, 0, 1, 10, 1)
+        oled.fill_rect(101, 3, 4, 4, 1)
+    else:
+        oled.fill_rect(127, 0, 1, 10, 1)
+        oled.fill_rect(105, 0, 25, 1, 1)
+        oled.fill_rect(105, 10, 25, 1, 1)
+        oled.fill_rect(105, 0, 1, 10, 1)
+        oled.fill_rect(101, 3, 4, 4, 1)
     oled.show()
+
+
+def read_battery_voltage():
+    adc.read()
+    adc_value = adc.read()
+    voltage = adc_value * (3.3 / 4095) * 2 + 0.34
+    return voltage
 
 
 def volume_up(pin):
@@ -69,7 +94,7 @@ def volume_up(pin):
         volume = min(volume + 1, max_volume)
         send_command(0x04)
         save_volume(volume)
-        update_display(volume, track_id)
+        update_display(volume, track_id, read_battery_voltage())
 
 
 def volume_down(pin):
@@ -80,7 +105,7 @@ def volume_down(pin):
         volume = max(volume - 1, 0)
         send_command(0x05)
         save_volume(volume)
-        update_display(volume, track_id)
+        update_display(volume, track_id, read_battery_voltage())
 
 
 def stop_song(pin):
@@ -116,12 +141,13 @@ def load_volume():
 
 def next_song(pin):
     global last_next_song_press, track_id
+    voltage = read_battery_voltage()
     current_time = utime.ticks_ms()
     if current_time - last_next_song_press > debounce_delay:
         last_next_song_press = current_time
         track_id = track_id + 1 if track_id < 10 else 1
         save_track_id(track_id)
-        update_display(volume, track_id)
+        update_display(volume, track_id, voltage)
         send_command(0x03, track_id)
 
 
@@ -150,10 +176,11 @@ def main():
     global volume, track_id
     volume = load_volume()
     track_id = load_track_id()
+    voltage = read_battery_voltage()
     utime.sleep(0.1)
     send_command(0x06, volume)
     utime.sleep(0.1)
-    update_display(volume, track_id)
+    update_display(volume, track_id, voltage)
     send_command(0x03, track_id)
     send_command(0x16)
 
