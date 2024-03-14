@@ -23,18 +23,18 @@ last_stop_song_press = 0
 debounce_delay = 200
 
 
+def send_command(command, parameter=0):
+    query = bytes([0x7E, 0xFF, 0x06, command, 0x00, 0x00, parameter, 0xEF])
+    DFPLAYER_UART.write(query)
+    utime.sleep(0.1)
+
+
 def stop_song(pin):
     global last_stop_song_press
     current_time = utime.ticks_ms()
     if current_time - last_stop_song_press > debounce_delay:
         last_stop_song_press = current_time
         send_command(0x16)
-
-
-def send_command(command, parameter=0):
-    query = bytes([0x7E, 0xFF, 0x06, command, 0x00, 0x00, parameter, 0xEF])
-    DFPLAYER_UART.write(query)
-    utime.sleep(0.1)
 
 
 def volume_up(pin):

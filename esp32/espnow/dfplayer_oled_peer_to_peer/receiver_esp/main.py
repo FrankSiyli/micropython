@@ -1,3 +1,5 @@
+import network
+import espnow
 import machine
 from machine import Pin, I2C
 import utime
@@ -10,8 +12,15 @@ oled = ssd1306.SSD1306_I2C(128, 64, i2c)
 
 DFPLAYER_UART = machine.UART(1, baudrate=9600, tx=17, rx=16)
 
+sta = network.WLAN(network.STA_IF)
+sta.active(True)
+sta.disconnect()
+
+esp = espnow.ESPNow()
+esp.active(True)
+
 max_volume = 30
-volume = 0
+volume = 10
 track_id = 1
 
 button_volume_up = Pin(13, Pin.IN, Pin.PULL_UP)
@@ -25,17 +34,30 @@ last_next_song_press = 0
 last_stop_song_press = 0
 debounce_delay = 200
 
+DFPLAYER_BUSY_PIN = 27
+
+dfplayer_busy = Pin(DFPLAYER_BUSY_PIN, Pin.IN)
+
+
+def dfplayer_busy_handler(pin):
+    utime.sleep(1)
+    print("pin.value:", pin.value())
+    if not pin.value():
+        pass  # Do nothing
+    else:
+        oled.fill(0)
+        oled.show()
+
 
 def send_command(command, parameter=0):
     query = bytes([0x7E, 0xFF, 0x06, command, 0x00, 0x00, parameter, 0xEF])
     DFPLAYER_UART.write(query)
-    utime.sleep(0.1)
 
 
 def update_display(volume, track_id):
     oled.fill(0)
-    oled.text("Volume: {}".format(volume), 25, 20)
-    oled.text("Track: {}".format(track_id), 29, 40)
+    oled.text("Volume: {}".format(volume), 30, 30)
+    oled.text("Track: {}".format(track_id), 35, 50)
     oled.show()
 
 
@@ -47,6 +69,7 @@ def volume_up(pin):
         volume = min(volume + 1, max_volume)
         send_command(0x04)
         save_volume(volume)
+        update_display(volume, track_id)
 
 
 def volume_down(pin):
@@ -57,13 +80,23 @@ def volume_down(pin):
         volume = max(volume - 1, 0)
         send_command(0x05)
         save_volume(volume)
+        update_display(volume, track_id)
+
+
+def stop_song(pin):
+    global last_stop_song_press
+    current_time = utime.ticks_ms()
+    if current_time - last_stop_song_press > debounce_delay:
+        last_stop_song_press = current_time
+        send_command(0x16)
+        oled.fill(0)
+        oled.show()
 
 
 def save_volume(volume):
     try:
         with open("volume.json", "w") as f:
             json.dump({"volume": volume}, f)
-        update_display(volume, track_id)
     except Exception as e:
         pass
 
@@ -86,22 +119,10 @@ def next_song(pin):
     current_time = utime.ticks_ms()
     if current_time - last_next_song_press > debounce_delay:
         last_next_song_press = current_time
-        next_track_id = track_id + 1
-        if next_track_id > 10:
-            next_track_id = 1
-        save_track_id(next_track_id)
-        send_command(0x16)
-        machine.reset()
-
-
-def stop_song(pin):
-    global last_stop_song_press
-    current_time = utime.ticks_ms()
-    if current_time - last_stop_song_press > debounce_delay:
-        last_stop_song_press = current_time
-        send_command(0x16)
-        oled.fill(0)
-        oled.show()
+        track_id = track_id + 1 if track_id < 10 else 1
+        save_track_id(track_id)
+        update_display(volume, track_id)
+        send_command(0x03, track_id)
 
 
 def save_track_id(track_id):
@@ -125,16 +146,6 @@ def load_track_id():
         return 1
 
 
-def is_playing():
-    send_command(0x42)
-    response = DFPLAYER_UART.read(10)
-    print("response", response)
-    if response is not None:
-        if len(response) >= 4 and response[3] == 0x3D:
-            oled.fill(0)
-            oled.show()
-
-
 def main():
     global volume, track_id
     volume = load_volume()
@@ -144,12 +155,16 @@ def main():
     utime.sleep(0.1)
     update_display(volume, track_id)
     send_command(0x03, track_id)
-
     send_command(0x16)
 
     while True:
-        is_playing()
-        utime.sleep(2)
+        _, msg = esp.recv()
+        if msg:
+            if msg == b"makeItHappen":
+                print("Message received:", msg)
+                main()
+            else:
+                print("Unknown message!")
 
 
 # Initialize pins and interrupts
@@ -157,6 +172,10 @@ button_volume_up.irq(trigger=Pin.IRQ_FALLING, handler=volume_up)
 button_volume_down.irq(trigger=Pin.IRQ_FALLING, handler=volume_down)
 button_next_song.irq(trigger=Pin.IRQ_FALLING, handler=next_song)
 button_stop_song.irq(trigger=Pin.IRQ_FALLING, handler=stop_song)
+dfplayer_busy.irq(
+    trigger=Pin.IRQ_FALLING | Pin.IRQ_RISING, handler=dfplayer_busy_handler
+)
+
 
 if __name__ == "__main__":
     main()
