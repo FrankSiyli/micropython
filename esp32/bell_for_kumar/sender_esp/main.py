@@ -1,53 +1,152 @@
 import network
-from machine import Pin
+from machine import Pin, I2C, ADC
 import espnow
 import utime
+import ssd1306
+import math
 
+i2c = I2C(0, sda=Pin(4), scl=Pin(0))
+oled = ssd1306.SSD1306_I2C(128, 64, i2c)
 
-# WLAN interface must be active to send/recv
 sta = network.WLAN(network.STA_IF)
 sta.active(True)
 
-
-# Initialize ESP-NOW
 esp = espnow.ESPNow()
 esp.active(True)
 
-# Define the MAC address of the receiving ESP32 (ESP32 B)
-peer = b"\x08:\x8d\x9aH0"
+peer = b"\x08:\x8d\x9aA\xd0"
 esp.add_peer(peer)
 
-# Create a function to send data when a button is pressed
 button_pin = Pin(18, Pin.IN, Pin.PULL_UP)
+adc = ADC(Pin(34))
+adc.atten(ADC.ATTN_11DB)
 
-# Initialize variables for debouncing
-last_button_state = 1  # Assuming the button is not pressed initially
-debounce_delay = 50  # Adjust value to your needs
+last_button_state = 1
+debounce_delay = 50
+display_on_time = 0
+
+
+def rotate_line(x1, y1, x2, y2, theta):
+    radians = math.radians(theta)
+    cos_theta = math.cos(radians)
+    sin_theta = math.sin(radians)
+
+    x1_rotated = x1 * cos_theta - y1 * sin_theta + 10
+    y1_rotated = x1 * sin_theta + y1 * cos_theta
+    x2_rotated = x2 * cos_theta - y2 * sin_theta + 10
+    y2_rotated = x2 * sin_theta + y2 * cos_theta
+
+    return x1_rotated, y1_rotated, x2_rotated, y2_rotated
+
+
+def draw_logo():
+    oled.fill_rect(25, 15, 80, 1, 1)  # top border
+    oled.fill_rect(25, 63, 80, 1, 1)  # bottom border
+    oled.fill_rect(25, 15, 1, 75, 1)  # left border
+    oled.fill_rect(105, 15, 1, 75, 1)  # right border
+
+    oled.fill_rect(29, 19, 38, 4, 1)  # first line
+    oled.fill_rect(70, 19, 20, 4, 1)  # second line
+    oled.fill_rect(93, 19, 9, 4, 1)  # third line
+
+    oled.text("European", 29, 30)
+
+    # First rotated line X
+    x1, y1, x2, y2 = rotate_line(50, 19, 50, 40, 30)
+    for offset in range(-2, 2):
+        oled.line(int(x1) + offset, int(y1), int(x2) + offset, int(y2), 1)
+
+    # Second rotated line X
+    x1, y1, x2, y2 = rotate_line(0, 48, 0, 69, -30)
+    for offset in range(-2, 2):
+        oled.line(int(x1) + offset, int(y1), int(x2) + offset, int(y2), 1)
+
+    oled.fill_rect(50, 41, 14, 3, 1)  # F
+    oled.fill_rect(50, 41, 3, 19, 1)  # F
+    oled.fill_rect(50, 48, 10, 3, 1)  # F
+
+    oled.fill_rect(67, 41, 14, 3, 1)  # E
+    oled.fill_rect(67, 41, 3, 19, 1)  # E
+    oled.fill_rect(67, 48, 13, 3, 1)  # E
+    oled.fill_rect(67, 57, 14, 3, 1)  # E
+
+    oled.fill_rect(85, 41, 3, 19, 1)  # L
+    oled.fill_rect(85, 57, 14, 3, 1)  # L
+
+
+def update_display(voltage):
+    oled.fill(0)
+    # oled.text("We are heading", 10, 30)
+    # oled.text("up to you.", 30, 50)
+    if voltage >= 3.8:
+        oled.fill_rect(105, 0, 25, 10, 1)
+        oled.fill_rect(105, 0, 1, 10, 1)
+        oled.fill_rect(101, 3, 4, 4, 1)
+    elif voltage >= 3.5:
+        oled.fill_rect(117, 0, 15, 10, 1)
+        oled.fill_rect(105, 0, 25, 1, 1)
+        oled.fill_rect(105, 10, 25, 1, 1)
+        oled.fill_rect(105, 0, 1, 10, 1)
+        oled.fill_rect(101, 3, 4, 4, 1)
+    else:
+        oled.fill_rect(127, 0, 1, 10, 1)
+        oled.fill_rect(105, 0, 25, 1, 1)
+        oled.fill_rect(105, 10, 25, 1, 1)
+        oled.fill_rect(105, 0, 1, 10, 1)
+        oled.fill_rect(101, 3, 4, 4, 1)
+
+    draw_logo()
+    # oled.text("Enjoy your day", 10, 30)
+    # oled.text("at", 60, 50)
+    # if voltage >= 3.8:
+    #     oled.fill_rect(105, 0, 25, 10, 1)
+    #     oled.fill_rect(105, 0, 1, 10, 1)
+    #     oled.fill_rect(101, 3, 4, 4, 1)
+    # elif voltage >= 3.5:
+    #     oled.fill_rect(117, 0, 15, 10, 1)
+    #     oled.fill_rect(105, 0, 25, 1, 1)
+    #     oled.fill_rect(105, 10, 25, 1, 1)
+    #     oled.fill_rect(105, 0, 1, 10, 1)
+    #     oled.fill_rect(101, 3, 4, 4, 1)
+    # else:
+    #     oled.fill_rect(127, 0, 1, 10, 1)
+    #    oled.fill_rect(105, 0, 25, 1, 1)
+    #    oled.fill_rect(105, 10, 25, 1, 1)
+    #    oled.fill_rect(105, 0, 1, 10, 1)
+    #    oled.fill_rect(101, 3, 4, 4, 1)
+    oled.show()
+
+
+def read_battery_voltage():
+    adc_value = adc.read()
+    voltage = adc_value * (3.3 / 4095) * 2 + 0.34
+    return voltage
+
 
 while True:
-    # Read the button state
+    voltage = read_battery_voltage()
+
+    if display_on_time > 0:
+        update_display(voltage)
+        display_on_time -= 1
+    else:
+        oled.fill(0)
+        oled.show()
+
     current_button_state = button_pin.value()
 
-    # Check if button state changed
     if current_button_state != last_button_state:
-        # Wait to debounce the button
         utime.sleep_ms(debounce_delay)
-
-        # Read the button state again to make sure it's stable
         current_button_state = button_pin.value()
 
-        # If the button state is still different, it's a valid press
         if current_button_state != last_button_state:
             if current_button_state == 0:
                 message = "makeItHappen"
-                esp.send(peer, message)
-            else:
-                message = "letItBe"
-                esp.send(peer, message)
+                try:
+                    esp.send(peer, message)
+                    print("Message sent:", message)
+                    display_on_time = 20000
+                except Exception as e:
+                    print("Error sending message:", e)
 
-        # Update the last button state
-        last_button_state = current_button_state
-
-
-# sender    08:3A:8D:9A:41:D0 b'\x08:\x8d\x9aA\xd0'
-# receiver  08:3A:8D:9A:48:30 b'\x08:\x8d\x9aH0'
+            last_button_state = current_button_state
