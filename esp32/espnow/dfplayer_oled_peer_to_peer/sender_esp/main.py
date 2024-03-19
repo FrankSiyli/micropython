@@ -39,16 +39,38 @@ def rotate_line(x1, y1, x2, y2, theta):
     return x1_rotated, y1_rotated, x2_rotated, y2_rotated
 
 
+def display_text(text1, text2):
+    oled.fill(0)
+    oled.text(text1, 10, 30)
+    oled.text(text2, 30, 50)
+    if voltage >= 3.8:
+        oled.fill_rect(105, 0, 25, 10, 1)
+        oled.fill_rect(105, 0, 1, 10, 1)
+        oled.fill_rect(101, 3, 4, 4, 1)
+    elif voltage >= 3.5:
+        oled.fill_rect(117, 0, 15, 10, 1)
+        oled.fill_rect(105, 0, 25, 1, 1)
+        oled.fill_rect(105, 10, 25, 1, 1)
+        oled.fill_rect(105, 0, 1, 10, 1)
+        oled.fill_rect(101, 3, 4, 4, 1)
+    else:
+        oled.fill_rect(127, 0, 1, 10, 1)
+        oled.fill_rect(105, 0, 25, 1, 1)
+        oled.fill_rect(105, 10, 25, 1, 1)
+        oled.fill_rect(105, 0, 1, 10, 1)
+        oled.fill_rect(101, 3, 4, 4, 1)
+    oled.show()
+    utime.sleep(3)
+
+
 def draw_logo():
     oled.fill_rect(25, 15, 80, 1, 1)  # top border
     oled.fill_rect(25, 63, 80, 1, 1)  # bottom border
     oled.fill_rect(25, 15, 1, 75, 1)  # left border
     oled.fill_rect(105, 15, 1, 75, 1)  # right border
-
     oled.fill_rect(29, 19, 38, 4, 1)  # first line
     oled.fill_rect(70, 19, 20, 4, 1)  # second line
     oled.fill_rect(93, 19, 9, 4, 1)  # third line
-
     oled.text("European", 29, 30)
 
     # First rotated line X
@@ -64,20 +86,12 @@ def draw_logo():
     oled.fill_rect(50, 41, 14, 3, 1)  # F
     oled.fill_rect(50, 41, 3, 19, 1)  # F
     oled.fill_rect(50, 48, 10, 3, 1)  # F
-
     oled.fill_rect(67, 41, 14, 3, 1)  # E
     oled.fill_rect(67, 41, 3, 19, 1)  # E
     oled.fill_rect(67, 48, 13, 3, 1)  # E
     oled.fill_rect(67, 57, 14, 3, 1)  # E
-
     oled.fill_rect(85, 41, 3, 19, 1)  # L
     oled.fill_rect(85, 57, 14, 3, 1)  # L
-
-
-def update_display(voltage):
-    oled.fill(0)
-    # oled.text("We are heading", 10, 30)
-    # oled.text("up to you.", 30, 50)
     if voltage >= 3.8:
         oled.fill_rect(105, 0, 25, 10, 1)
         oled.fill_rect(105, 0, 1, 10, 1)
@@ -95,26 +109,14 @@ def update_display(voltage):
         oled.fill_rect(105, 0, 1, 10, 1)
         oled.fill_rect(101, 3, 4, 4, 1)
 
+
+def update_display(voltage):
+    display_text("We are heading", "up to you")
+    display_text("Enjoy your day", "   at")
+    oled.fill(0)
     draw_logo()
-    # oled.text("Enjoy your day", 10, 30)
-    # oled.text("at", 60, 50)
-    # if voltage >= 3.8:
-    #     oled.fill_rect(105, 0, 25, 10, 1)
-    #     oled.fill_rect(105, 0, 1, 10, 1)
-    #     oled.fill_rect(101, 3, 4, 4, 1)
-    # elif voltage >= 3.5:
-    #     oled.fill_rect(117, 0, 15, 10, 1)
-    #     oled.fill_rect(105, 0, 25, 1, 1)
-    #     oled.fill_rect(105, 10, 25, 1, 1)
-    #     oled.fill_rect(105, 0, 1, 10, 1)
-    #     oled.fill_rect(101, 3, 4, 4, 1)
-    # else:
-    #     oled.fill_rect(127, 0, 1, 10, 1)
-    #    oled.fill_rect(105, 0, 25, 1, 1)
-    #    oled.fill_rect(105, 10, 25, 1, 1)
-    #    oled.fill_rect(105, 0, 1, 10, 1)
-    #    oled.fill_rect(101, 3, 4, 4, 1)
     oled.show()
+    utime.sleep(3)
 
 
 def read_battery_voltage():
@@ -145,7 +147,7 @@ while True:
                 try:
                     esp.send(peer, message)
                     print("Message sent:", message)
-                    display_on_time = 20000
+                    display_on_time = 3
                 except Exception as e:
                     print("Error sending message:", e)
 
