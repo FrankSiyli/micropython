@@ -112,7 +112,7 @@ def draw_logo():
 
 def update_display(voltage):
     display_text("We are heading", "up to you")
-    display_text("Enjoy your day", "   at")
+    display_text("Enjoy your day", "    at")
     oled.fill(0)
     draw_logo()
     oled.show()
