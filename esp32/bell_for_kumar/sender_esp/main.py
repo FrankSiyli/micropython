@@ -1,5 +1,5 @@
 import network
-from machine import Pin, I2C, ADC
+from machine import Pin, I2C, ADC, WDT
 import espnow
 import utime
 import ssd1306
@@ -14,7 +14,7 @@ sta.active(True)
 esp = espnow.ESPNow()
 esp.active(True)
 
-peer = b"\x08:\x8d\x9aA\xd0"
+peer = b"\x08:\x8d\x9a<\x0c"
 esp.add_peer(peer)
 
 button_pin = Pin(18, Pin.IN, Pin.PULL_UP)
@@ -24,6 +24,8 @@ adc.atten(ADC.ATTN_11DB)
 last_button_state = 1
 debounce_delay = 50
 display_on_time = 0
+
+wdt = WDT(timeout=30000)
 
 
 def rotate_line(x1, y1, x2, y2, theta):
@@ -126,6 +128,7 @@ def read_battery_voltage():
 
 
 while True:
+    wdt.feed()
     voltage = read_battery_voltage()
 
     if display_on_time > 0:
