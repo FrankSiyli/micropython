@@ -35,7 +35,7 @@ last_volume_up_press = 0
 last_volume_down_press = 0
 last_next_song_press = 0
 last_stop_song_press = 0
-debounce_delay = 200
+debounce_delay = 400
 
 DFPLAYER_BUSY_PIN = 27
 
@@ -145,7 +145,7 @@ def next_song(pin):
     current_time = utime.ticks_ms()
     if current_time - last_next_song_press > debounce_delay:
         last_next_song_press = current_time
-        track_id = track_id + 1 if track_id < 10 else 1
+        track_id = track_id + 1 if track_id < 35 else 1
         save_track_id(track_id)
         update_display(volume, track_id, voltage)
         send_command(0x03, track_id)
