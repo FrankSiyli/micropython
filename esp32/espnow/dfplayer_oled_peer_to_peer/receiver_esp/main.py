@@ -189,7 +189,8 @@ def main():
         if msg:
             if msg == b"makeItHappen":
                 print("Message received:", msg)
-                main()
+                machine.reset()
+                return
             else:
                 print("Unknown message!")
 
@@ -202,6 +203,8 @@ button_stop_song.irq(trigger=Pin.IRQ_FALLING, handler=stop_song)
 dfplayer_busy.irq(
     trigger=Pin.IRQ_FALLING | Pin.IRQ_RISING, handler=dfplayer_busy_handler
 )
+
+main()
 
 
 if __name__ == "__main__":
