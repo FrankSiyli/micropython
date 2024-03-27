@@ -19,7 +19,7 @@ async def wait_button():
     btn_prev = btn.value()
     while (btn.value() == 1) or (btn.value() == btn_prev):
         btn_prev = btn.value()
-        await uasyncio.sleep(0.2)
+        await uasyncio.sleep(0.1)
 
 
 async def main():
