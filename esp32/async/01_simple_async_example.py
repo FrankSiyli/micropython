@@ -1,9 +1,13 @@
 from machine import Pin
 import uasyncio
 
-led = Pin(25, Pin.OUT)
-btn = Pin(27, Pin.IN, Pin.PULL_UP)
+LED_PIN = 25
+BTN_PIN = 27
+BLINK_DELAY = 0.5
+BUTTON_POLL_DELAY = 0.2
 
+led = Pin(LED_PIN, Pin.OUT)
+btn = Pin(BTN_PIN, Pin.IN, Pin.PULL_UP)
 led_state = False
 
 
@@ -17,17 +21,25 @@ async def blink(delay):
 
 async def wait_button():
     btn_prev = btn.value()
-    while (btn.value() == 1) or (btn.value() == btn_prev):
-        btn_prev = btn.value()
-        await uasyncio.sleep(0.2)
+    while True:
+        await uasyncio.sleep(BUTTON_POLL_DELAY)
+        current_value = btn.value()
+        if current_value != btn_prev:
+            await uasyncio.sleep(0.02)
+            if current_value == btn.value():
+                return current_value
+        btn_prev = current_value
 
 
 async def main():
-    uasyncio.create_task(blink(0.5))
-
+    uasyncio.create_task(blink(BLINK_DELAY))
     while True:
-        await wait_button()
-        print("yeha")
+        button_value = await wait_button()
+        if button_value == 0:
+            print("Button pressed!")
 
 
-uasyncio.run(main())
+try:
+    uasyncio.run(main())
+except KeyboardInterrupt:
+    pass
