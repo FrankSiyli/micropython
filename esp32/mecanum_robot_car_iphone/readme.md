@@ -12,12 +12,16 @@
 <br>
 1x ON/OFF switch
 <br>
+2x 18650 cells
+<br>
+1x 2S BMS charger
+<br>
 <br>
 
 ## Code Base
 
 The fantastic code base for a 2 wheel robot is from
-![donskytech](https://github.com/donskytech/micropython-wifi-robot-car/tree/main)
+[donskytech](https://github.com/donskytech/micropython-wifi-robot-car/tree/main)
 <br>
 <br>
 I adjusted it for my 4 wheel mecanum robot.
