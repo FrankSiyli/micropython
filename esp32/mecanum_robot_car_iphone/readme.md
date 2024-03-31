@@ -12,20 +12,18 @@
 <br>
 <br>
 
-### Code Base
+## Code Base
 
 <br>
-<br>
-The fantastic code base for a 2 wheel robot is from [donskytech](https://github.com/donskytech/micropython-wifi-robot-car/tree/main)
+The fantastic code base for a 2 wheel robot is from 
+![donskytech](https://github.com/donskytech/micropython-wifi-robot-car/tree/main)
 <br>
 <br>
 I adjusted it for my 4 wheel mecanum robot.
 <br>
-<br>
 
-### To use the robot car, follow these steps:
+## To use the robot car, follow these steps:
 
-<br>
 <br>
 1. In the boot.py change the Hotspot name and the password that belongs to your iphone Hotspot.
 2. Create the Hotspot with your iPhone.
@@ -35,12 +33,11 @@ I adjusted it for my 4 wheel mecanum robot.
 <br>
 <br>
 
-### Pins
+## Pins
 
 <br>
-<br>
 
-## Front L298N:
+### Front L298N:
 
 IN1 --> Pin 21
 IN2 --> Pin 19
@@ -48,10 +45,9 @@ IN3 --> Pin 33
 IN4 --> Pin 25
 ENA --> Pin 23
 ENB --> Pin 22
+<br>
 
-<br>
-<br>
-## Rear L298N:
+### Rear L298N:
 
 IN1 --> Pin 17
 IN2 --> Pin 16
