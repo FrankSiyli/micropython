@@ -1,5 +1,4 @@
-![image](./IMG_4908.jpg)
-![image](./IMG_4907.jpg)
+![image](./IMG_4913.jpg)
 
 ### Parts
 
