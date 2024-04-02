@@ -46,28 +46,44 @@ input[type="radio"] {
 }
 
 /**************
+   sensor values
+**************/
+
+.sensor-values{
+color: #fff;
+margin: 2rem;
+}
+
+
+
+
+
+/**************
    images
 **************/
 
 .images{
   width: 100vw;
   height: 40vh;
-  margin-top: 2rem;
+  margin-top: 4rem;
+  margin-bottom: 4rem;
   display: flex;
   justify-content: center;
-  gap: 1rem;
   color: #fff;
+  text-align: center;
 }
 
 .frontImage{
-  width: 40vw;
+  width: 90vw;
+  max-width: 800px;
   height: 100%;
   border: 1px solid #fff;
   border-radius: 5px;
 }
 
 .rearImage{
-  width: 40vw;
+  width: 90vw;
+  max-width: 800px;
   height: 100%;
   border: 1px solid #fff;
   border-radius: 5px;
@@ -78,7 +94,7 @@ input[type="radio"] {
 **************/
 .set {
   width: 100vw;
-  height: 50vh;
+  height: 40vh;
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -99,7 +115,6 @@ input[type="radio"] {
   justify-content: center;
   align-items: center;
 }
-
 .drive-pad a.left,
 .drive-pad a.right {
   width: 40%;
