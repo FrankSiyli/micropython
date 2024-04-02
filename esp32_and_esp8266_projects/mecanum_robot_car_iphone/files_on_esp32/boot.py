@@ -2,8 +2,8 @@
 import network, utime
 
 # Replace the following with your WIFI Credentials
-SSID = "your iphone hotspot name"
-SSI_PASSWORD = "your password"
+SSID = "frank"
+SSI_PASSWORD = "xwg0rp7dz09gu"
 
 def do_connect():
     import network

@@ -2,15 +2,21 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-color: #222;
+  background-color: #1c1c1c;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; 
 }
 .wrapper {
   display: flex;
-  height: 9vh;
+  height: 5vh;
   width: 100vw;
+  max-width: 800px;
   justify-content: center;
-  align-items: center;
+  align-content: center;
   margin-top: 0.5rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 .wrapper .option {
   height: 100%;
@@ -18,7 +24,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 10px;
+  margin: 0 5px;
   border-radius: 5px;
   color: #fff;
   cursor: pointer;
@@ -32,161 +38,167 @@ input[type="radio"] {
 #option-1:checked:checked ~ .option-1,
 #option-2:checked:checked ~ .option-2,
 #option-3:checked:checked ~ .option-3 {
-  border-color: #eb6607;
+  border-color: #f29106;
+  color: #f29106;
 }
 .wrapper .option span {
-  font-size: 1.5rem;
+  background: none;
 }
 
 /**************
-   D-PAD - O-PAD
+   images
+**************/
+
+.images{
+  width: 100vw;
+  height: 40vh;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  color: #fff;
+}
+
+.frontImage{
+  width: 40vw;
+  height: 100%;
+  border: 1px solid #fff;
+  border-radius: 5px;
+}
+
+.rearImage{
+  width: 40vw;
+  height: 100%;
+  border: 1px solid #fff;
+  border-radius: 5px;
+}
+
+/**************
+   drive-PAD
 **************/
 .set {
   width: 100vw;
-  height: 100vh;
+  height: 50vh;
   overflow: hidden;
   display: flex;
-  align-items: center;
-  justify-content: space-around;
+  justify-content: center;
+  align-items: end;
+  margin-bottom: 1rem;
 }
-.d-pad {
+.drive-pad {
   position: relative;
-  width: 200px;
-  height: 200px;
-  border-radius: 48%;
+  width: 50vw;
+  max-width: 500px;
+  height: 40vh;
   overflow: hidden;
+  margin-left: 1rem;
 }
-.d-pad a {
+.drive-pad a {
   position: absolute;
-  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-  width: 33.3%;
-  height: 43%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.d-pad a:before {
-  content: "";
-  position: absolute;
-  transition: all 0.25s;
+
+.drive-pad a.left,
+.drive-pad a.right {
+  width: 40%;
+  max-width: 150px;
+  height: 30%;
+  max-height: 200px;
 }
-.d-pad a.left,
-.d-pad a.right {
-  width: 43%;
-  height: 33%;
+.drive-pad a.up,
+.drive-pad a.down{
+  width: 50%;
+  max-width: 200px;
+  height: 30%;
+  max-height: 200px;
 }
-.d-pad a.up {
+.drive-pad a.up {
   top: 0;
   left: 50%;
   transform: translate(-50%, 0);
-  border-radius: 17% 17% 50% 50%;
+  border-radius: 20% 20% 5% 5%;
 }
-.d-pad a.up:before {
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-width: 0 13px 19px 13px;
-  border-color: transparent transparent #fff transparent;
-}
-.d-pad a.down {
+.drive-pad a.down {
   bottom: 0;
   left: 50%;
   transform: translate(-50%, 0);
-  border-radius: 50% 50% 17% 17%;
+  border-radius: 5% 5% 5% 5%;
 }
-.d-pad a.down:before {
-  bottom: 40%;
-  left: 50%;
-  transform: translate(-50%, 50%);
-  border-width: 19px 13px 0px 13px;
-  border-color: #fff transparent transparent transparent;
-}
-.d-pad a.left {
+.drive-pad a.left {
   top: 50%;
   left: 0;
   transform: translate(0, -50%);
-  border-radius: 17% 50% 50% 17%;
+  border-radius: 20% 5% 5% 20%;
 }
-.d-pad a.left:before {
-  left: 40%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  border-width: 13px 19px 13px 0;
-  border-color: transparent #fff transparent transparent;
-}
-.d-pad a.right {
+.drive-pad a.right {
   top: 50%;
   right: 0;
   transform: translate(0, -50%);
-  border-radius: 50% 17% 17% 50%;
+  border-radius: 5% 20% 20% 5%;
 }
-.d-pad a.right:before {
-  right: 40%;
-  top: 50%;
-  transform: translate(50%, -50%);
-  border-width: 13px 0 13px 19px;
-  border-color: transparent transparent transparent #fff;
+.drive-pad a {
+  border: 5px solid #f29106;
+  color: #fff;
+  text-align: center;
 }
-.o-pad {
+.drive-pad a.up:hover {
+  cursor: pointer;
+}
+.drive-pad a.right:hover {
+  cursor: pointer;
+}
+.drive-pad a.down:hover {
+  cursor: pointer;
+}
+.drive-pad a.left:hover {
+  cursor: pointer;
+}
+
+/**************
+   spin-PAD
+**************/
+
+.spin-pad {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30vw;
-  height: 10vh;
-  border: 3px solid #eb6607;
+  width: 25vw;
+  height: 8vh;
   border-radius: 5px;
   overflow: hidden;
 }
-.o-pad a {
-  display: block;
-  position: absolute;
+.spin-pad a.right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 50%;
+  max-width: 300px;
+  height: 8vh;
+  border: 3px solid #f29106;
+  border-radius: 5px;
+  overflow: hidden;
+  color: #fff;
+  cursor: pointer;
   text-align: center;
-  transform: rotate(45deg);
 }
-.o-pad a:after {
-  content: "";
-  position: absolute;
-  transform: translate(-50%, -50%) rotate(-45deg);
-  transition: all 0.25s;
-}
-.o-pad a.left {
-  top: 45%;
-  right: 50%;
-  transform: translate(-20%, -50%) rotate(45deg);
-  border-bottom-left-radius: 50%;
-  border: none;
-}
-.o-pad a.left:after {
-  left: 53%;
-  top: 47%;
-  border-width: 13px 19px 13px 0;
-  border-color: transparent #fff transparent transparent;
-}
-.o-pad a.right {
-  top: 55%;
-  left: 50%;
-  transform: translate(20%, -50%) rotate(45deg);
-  border-top-right-radius: 50%;
-  border: none;
-}
-.o-pad a.right:after {
-  left: 47%;
-  top: 53%;
-  border-width: 13px 0 13px 19px;
-  border-color: transparent transparent transparent #fff;
-}
-.d-pad:before,
-.d-pad a {
-  border: 5px solid #eb6607;
-}
-.d-pad a.up:hover {
+.spin-pad a.left {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  max-width: 300px;
+  height: 8vh;
+  border: 3px solid #f29106;
+  border-radius: 5px;
+  overflow: hidden;
+  color: #fff;
   cursor: pointer;
+  text-align: center;
 }
-.d-pad a.right:hover {
-  cursor: pointer;
-}
-.d-pad a.down:hover {
-  cursor: pointer;
-}
-.d-pad a.left:hover {
-  cursor: pointer;
-}
+
+

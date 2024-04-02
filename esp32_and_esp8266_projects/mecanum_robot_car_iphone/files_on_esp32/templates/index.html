@@ -11,54 +11,56 @@
     />
     <link href="static/css/custom.css" rel="stylesheet" type="text/css" />
   </head>
-
   <body>
-    <div class="container">
-      <div class="parent">
-        <div class="wrapper">
-          <input
-            type="radio"
-            name="speed-settings"
-            id="option-1"
-            value="slow-speed"
-          />
-          <input
-            type="radio"
-            name="speed-settings"
-            id="option-2"
-            value="normal-speed"
-            checked
-          />
-          <input
-            type="radio"
-            name="speed-settings"
-            id="option-3"
-            value="fast-speed"
-          />
-          <label for="option-1" class="option option-1">
-            <span>Slow</span>
-          </label>
-          <label for="option-2" class="option option-2">
-            <span>Normal</span>
-          </label>
-          <label for="option-3" class="option option-3">
-            <span>Fast</span>
-          </label>
-        </div>
+    <div class="wrapper">
+      <input
+        type="radio"
+        name="speed-settings"
+        id="option-1"
+        value="slow-speed"
+      />
+      <input
+        type="radio"
+        name="speed-settings"
+        id="option-2"
+        value="normal-speed"
+        checked
+      />
+      <input
+        type="radio"
+        name="speed-settings"
+        id="option-3"
+        value="fast-speed"
+      />
+      <label for="option-1" class="option option-1">
+        <span>Slow</span>
+      </label>
+      <label for="option-2" class="option option-2">
+        <span>Normal</span>
+      </label>
+      <label for="option-3" class="option option-3">
+        <span>Fast</span>
+      </label>
+    </div>
 
-        <div class="set">
-          <nav class="d-pad">
-            <a class="up control" data-direction="forward"></a>
-            <a class="right control" data-direction="right"></a>
-            <a class="down control" data-direction="reverse"></a>
-            <a class="left control" data-direction="left"></a>
-          </nav>
-          <nav class="o-pad">
-            <a class="right control" data-direction="spinRight"></a>
-            <a class="left control" data-direction="spinLeft"></a>
-          </nav>
-        </div>
-      </div>
+    <div class="images">
+      <div class="frontImage">front camera video</div>
+      <div class="rearImage">rear camera video</div>
+    </div>
+
+    <div class="set">
+      <nav class="spin-pad">
+        <a class="left control" data-direction="spinLeft"> Spin left </a>
+      </nav>
+      <nav class="drive-pad">
+        <a class="up control" data-direction="forward"> Forward </a>
+        <a class="right control" data-direction="right"> Right </a>
+        <a class="down control" data-direction="reverse"> Reverse </a>
+        <a class="left control" data-direction="left"> Left </a>
+      </nav>
+      <nav class="spin-pad">
+        <a class="right control" data-direction="spinRight"> Spin right </a>
+      </nav>
     </div>
     <script src="static/js/custom.js"></script>
   </body>
