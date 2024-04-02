@@ -1,10 +1,5 @@
 from machine import Pin, PWM
 
-"""
-Class to represent our robot car
-
-
-"""
 
 
 class RobotCar:
@@ -34,7 +29,6 @@ class RobotCar:
         self.speed = speed
 
     def stop(self):
-        print("Car stopping")
         self.front_right_motor_control_1.value(0)
         self.front_right_motor_control_2.value(0)
         self.front_left_motor_control_1.value(0)
@@ -50,7 +44,6 @@ class RobotCar:
         self.rear_left_motor_enable_pin.duty_u16(0)
 
     def forward(self):
-        print("Move forward")
         self.front_right_motor_enable_pin.duty_u16(self.speed)
         self.front_left_motor_enable_pin.duty_u16(self.speed)
         self.rear_right_motor_enable_pin.duty_u16(self.speed)
@@ -66,7 +59,6 @@ class RobotCar:
         self.rear_left_motor_control_2.value(0)
 
     def reverse(self):
-        print("Move reverse")
         self.front_right_motor_enable_pin.duty_u16(self.speed)
         self.front_left_motor_enable_pin.duty_u16(self.speed)
         self.rear_right_motor_enable_pin.duty_u16(self.speed)
@@ -82,7 +74,6 @@ class RobotCar:
         self.rear_left_motor_control_2.value(1)
 
     def left(self):
-        print("Turning Left")
         self.front_right_motor_enable_pin.duty_u16(self.speed)
         self.front_left_motor_enable_pin.duty_u16(self.speed)
         self.rear_right_motor_enable_pin.duty_u16(self.speed)
@@ -98,7 +89,6 @@ class RobotCar:
         self.rear_left_motor_control_2.value(1)
 
     def right(self):
-        print("Turning Right")
         self.front_right_motor_enable_pin.duty_u16(self.speed)
         self.front_left_motor_enable_pin.duty_u16(self.speed)
         self.rear_right_motor_enable_pin.duty_u16(self.speed)
@@ -114,7 +104,6 @@ class RobotCar:
         self.rear_left_motor_control_2.value(0)
 
     def spinLeft(self):
-        print("Spinning Left")
         self.front_right_motor_enable_pin.duty_u16(self.speed)
         self.front_left_motor_enable_pin.duty_u16(self.speed)
         self.rear_right_motor_enable_pin.duty_u16(self.speed)
@@ -130,7 +119,6 @@ class RobotCar:
         self.rear_left_motor_control_2.value(1)
 
     def spinRight(self):
-        print("Spinning Right")
         self.front_right_motor_enable_pin.duty_u16(self.speed)
         self.front_left_motor_enable_pin.duty_u16(self.speed)
         self.rear_right_motor_enable_pin.duty_u16(self.speed)
