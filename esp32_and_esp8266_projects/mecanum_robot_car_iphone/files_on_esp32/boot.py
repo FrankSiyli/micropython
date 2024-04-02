@@ -2,7 +2,7 @@
 import network, utime
 
 # Replace the following with your WIFI Credentials
-SSID = "your iphone hotspot nasme"
+SSID = "your iphone hotspot name"
 SSI_PASSWORD = "your iphone hotspot password"
 
 
