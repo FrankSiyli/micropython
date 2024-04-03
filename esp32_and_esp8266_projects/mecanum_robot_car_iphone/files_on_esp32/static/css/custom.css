@@ -7,7 +7,10 @@
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; 
 }
-.wrapper {
+/**************
+   speed-options
+**************/
+.speed-options {
   display: flex;
   height: 5vh;
   width: 100vw;
@@ -18,7 +21,7 @@
   margin-left: auto;
   margin-right: auto;
 }
-.wrapper .option {
+.speed-options .option {
   height: 100%;
   width: 100%;
   display: flex;
@@ -41,27 +44,19 @@ input[type="radio"] {
   border-color: #f29106;
   color: #f29106;
 }
-.wrapper .option span {
+.speed-options .option span {
   background: none;
 }
-
 /**************
-   sensor values
+   sensor-values
 **************/
-
 .sensor-values{
 color: #fff;
 margin: 2rem;
 }
-
-
-
-
-
 /**************
    images
 **************/
-
 .images{
   width: 100vw;
   height: 40vh;
@@ -72,7 +67,6 @@ margin: 2rem;
   color: #fff;
   text-align: center;
 }
-
 .frontImage{
   width: 90vw;
   max-width: 800px;
@@ -80,7 +74,6 @@ margin: 2rem;
   border: 1px solid #fff;
   border-radius: 5px;
 }
-
 .rearImage{
   width: 90vw;
   max-width: 800px;
@@ -88,11 +81,13 @@ margin: 2rem;
   border: 1px solid #fff;
   border-radius: 5px;
 }
-
 /**************
-   drive-PAD
+   control-pads
 **************/
-.set {
+/**************
+   drive-pad
+**************/
+.control-pads {
   width: 100vw;
   height: 40vh;
   overflow: hidden;
@@ -170,11 +165,9 @@ margin: 2rem;
 .drive-pad a.left:hover {
   cursor: pointer;
 }
-
 /**************
-   spin-PAD
+   spin-pad
 **************/
-
 .spin-pad {
   position: relative;
   display: flex;
@@ -215,5 +208,6 @@ margin: 2rem;
   cursor: pointer;
   text-align: center;
 }
+
 
 
