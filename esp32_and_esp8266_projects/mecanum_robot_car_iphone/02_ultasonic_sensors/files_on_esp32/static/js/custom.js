@@ -12,7 +12,7 @@ function initializeSocket() {
 function onLoad() {
   initializeSocket();
   setDefaultSpeed();
-  setInterval(updateDistanceValue, 500); // Update distance value every 0.5 seconds
+  setInterval(updateDistanceValue, 300);
 }
 
 function onOpen(event) {
@@ -71,11 +71,11 @@ document.body.addEventListener("click", function (e) {
 function touchStartHandler(event) {
   var direction = event.target.dataset.direction;
   console.log("Touch Start :: " + direction);
-  sendMessage(direction);
+  sendMessage("car-" + direction);
 }
 
 function touchEndHandler(event) {
-  const stop_command = "stop";
+  const stop_command = "car-stop";
   var direction = event.target.dataset.direction;
   console.log("Touch End :: " + direction);
   sendMessage(stop_command);

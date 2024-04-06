@@ -4,8 +4,9 @@ from microdot_utemplate import render_template
 from robot_car import RobotCar
 from machine import Pin
 from machine import time_pulse_us
+import asyncio
 import time
-import ujson  # Import ujson for JSON serialization
+import ujson
 
 app = Microdot()
 Response.default_content_type = "text/html"
@@ -29,15 +30,36 @@ robot_car = RobotCar(
     MEDIUM_POWER_LEVEL,
 )
 
+
+def get_distance_cm():
+    trig_pin.value(0)
+    time.sleep_us(5)
+    trig_pin.value(1)
+    time.sleep_us(10)
+    trig_pin.value(0)
+    duration = time_pulse_us(echo_pin, 1)
+    distance_cm = duration / 58
+    return int(distance_cm)
+
+
+async def request_distance_command(ws):
+    distance = get_distance_cm()
+    print(f"Distance: {distance} cm")
+    ws_message = ujson.dumps({"distance": distance})
+    await ws.send(ws_message)
+
+
 car_commands = {
-    "forward": robot_car.forward,
-    "reverse": robot_car.reverse,
-    "left": robot_car.left,
-    "right": robot_car.right,
-    "spinLeft": robot_car.spinLeft,
-    "spinRight": robot_car.spinRight,
-    "stop": robot_car.stop,
+    "car-forward": robot_car.forward,
+    "car-reverse": robot_car.reverse,
+    "car-left": robot_car.left,
+    "car-right": robot_car.right,
+    "car-spinLeft": robot_car.spinLeft,
+    "car-spinRight": robot_car.spinRight,
+    "car-stop": robot_car.stop,
 }
+
+sensor_commands = {"request_distance": request_distance_command}
 
 speed_commands = {
     "slow-speed": MIN_POWER_LEVEL,
@@ -52,17 +74,6 @@ trig_pin = Pin(TRIG_PIN_NUM, Pin.OUT)
 echo_pin = Pin(ECHO_PIN_NUM, Pin.IN)
 
 
-def get_distance_cm():
-    trig_pin.value(0)
-    time.sleep_us(5)
-    trig_pin.value(1)
-    time.sleep_us(10)
-    trig_pin.value(0)
-    duration = time_pulse_us(echo_pin, 1)
-    distance_cm = duration / 58
-    return int(distance_cm)
-
-
 # App Route
 @app.route("/")
 async def index(request):
@@ -71,23 +82,28 @@ async def index(request):
 
 @app.route("/ws")
 @with_websocket
-async def executeCarCommands(request, ws):
+async def handle_websocket(request, ws):
     while True:
         websocket_message = await ws.receive()
-        print(f"receive websocket message : {websocket_message}")
+        print(f"Received WebSocket message: {websocket_message}")
 
-        if "speed" in websocket_message:
-            new_speed = speed_commands.get(websocket_message)
-            robot_car.set_speed(new_speed)
+        # Check the type of WebSocket message and execute the corresponding coroutine
+        if websocket_message in car_commands:
+            asyncio.create_task(handle_car_command(websocket_message))
+        elif websocket_message in sensor_commands:
+            asyncio.create_task(handle_sensor_command(websocket_message, ws))
+        elif websocket_message in speed_commands:
+            robot_car.set_speed(speed_commands[websocket_message])
         else:
-            command = car_commands.get(websocket_message)
-            command()
+            print(f"Command '{websocket_message}' not found.")
 
-        # Send ultrasonic sensor data to the WebSocket client
-        distance = get_distance_cm()
-        await ws.send(
-            ujson.dumps({"distance": distance})
-        )  # Serialize distance data to JSON
+
+async def handle_car_command(command):
+    await car_commands[command]()
+
+
+async def handle_sensor_command(command, ws):
+    await sensor_commands[command](ws)
 
 
 @app.route("/shutdown")
