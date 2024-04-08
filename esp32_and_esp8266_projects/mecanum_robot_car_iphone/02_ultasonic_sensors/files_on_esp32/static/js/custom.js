@@ -12,7 +12,7 @@ function initializeSocket() {
 function onLoad() {
   initializeSocket();
   setDefaultSpeed();
-    //  setInterval(updateDistanceValue, 1000);
+  setInterval(updateDistanceValue, 1000);
 
 }
 
