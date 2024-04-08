@@ -12,7 +12,8 @@ function initializeSocket() {
 function onLoad() {
   initializeSocket();
   setDefaultSpeed();
-  setInterval(updateDistanceValue, 300);
+    //  setInterval(updateDistanceValue, 1000);
+
 }
 
 function onOpen(event) {
@@ -37,6 +38,7 @@ function onMessage(event) {
 function updateDistanceValue() {
   // Send a message to request the distance value from the server
   websocket.send("request_distance");
+
 }
 
 function sendMessage(message) {

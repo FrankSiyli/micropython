@@ -1,4 +1,5 @@
 from machine import Pin
+from machine import time_pulse_us
 import time
 
 TRIG_PIN_NUM = 15
