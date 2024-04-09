@@ -4,7 +4,7 @@ from microdot_utemplate import render_template
 from robot_car import RobotCar
 from machine import Pin
 from machine import time_pulse_us
-from ultrasonic_sensors import get_distance_cm
+from ultrasonic_sensors import get_distance_front, get_distance_rear
 import uasyncio
 import time
 import ujson
@@ -33,9 +33,9 @@ robot_car = RobotCar(
 
 
 async def request_distance_command(ws):
-    distance = get_distance_cm()
-    print(f"Distance: {distance} cm")
-    ws_message = ujson.dumps({"distance": distance})
+    distance_front = get_distance_front()
+    print(f"FrontDistance: {distance_front} cm")
+    ws_message = ujson.dumps({"distance_front": distance_front})
     await ws.send(ws_message)
 
 

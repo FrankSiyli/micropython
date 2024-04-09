@@ -26,12 +26,11 @@ function onClose(event) {
 }
 
 function onMessage(event) {
-  console.log("WebSocket message received:", event);
   var data = JSON.parse(event.data);
-  if (data.distance !== undefined) {
+  if (data.distance_front !== undefined) {
     document.getElementById(
-      "distance-value"
-    ).innerText = `Distance: ${data.distance} cm`;
+      "distance-front-value"
+    ).innerText = `Front distance: ${data.distance_front} cm`;
   }
 }
 
