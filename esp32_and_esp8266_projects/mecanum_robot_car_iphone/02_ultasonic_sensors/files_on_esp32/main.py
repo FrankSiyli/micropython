@@ -35,8 +35,11 @@ robot_car = RobotCar(
 async def request_distance_command(ws):
     distance_front = get_distance_front()
     print(f"FrontDistance: {distance_front} cm")
-    ws_message = ujson.dumps({"distance_front": distance_front})
+    distance_rear = get_distance_rear()
+    print(f"RearDistance: {distance_rear} cm")
+    ws_message = ujson.dumps({"distance_front": distance_front, "distance_rear": distance_rear})
     await ws.send(ws_message)
+
 
 
 car_commands = {
