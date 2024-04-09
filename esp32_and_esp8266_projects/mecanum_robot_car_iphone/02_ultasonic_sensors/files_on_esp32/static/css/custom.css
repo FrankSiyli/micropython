@@ -51,8 +51,16 @@ input[type="radio"] {
    sensor-values
 **************/
 .sensor-values{
+  display: flex;
+  justify-content: space-between;
 color: #fff;
 margin: 2rem;
+}
+.sensor-values-left{
+
+}
+.sensor-values-right{
+text-align: right;
 }
 /**************
    images
@@ -208,6 +216,7 @@ margin: 2rem;
   cursor: pointer;
   text-align: center;
 }
+
 
 
 

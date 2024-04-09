@@ -27,10 +27,13 @@ function onClose(event) {
 
 function onMessage(event) {
   var data = JSON.parse(event.data);
-  if (data.distance_front !== undefined) {
+  if (data.distance_front && data.distance_rear !== undefined) {
     document.getElementById(
       "distance-front-value"
     ).innerText = `Front distance: ${data.distance_front} cm`;
+    document.getElementById(
+      "distance-rear-value"
+    ).innerText = `Rear distance: ${data.distance_rear} cm`;
   }
 }
 
