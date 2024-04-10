@@ -34,11 +34,12 @@ robot_car = RobotCar(
 
 async def request_distance_command(ws):
     distance_front = get_distance_front()
-    print(f"FrontDistance: {distance_front} cm")
+    print(f"FrontDistance: {distance_front} cm, Type: {type(distance_front)}")
     distance_rear = get_distance_rear()
-    print(f"RearDistance: {distance_rear} cm")
+    print(f"RearDistance: {distance_rear} cm, Type: {type(distance_rear)}")
     ws_message = ujson.dumps({"distance_front": distance_front, "distance_rear": distance_rear})
     await ws.send(ws_message)
+
 
 
 
@@ -81,15 +82,21 @@ async def handle_websocket(request, ws):
             uasyncio.create_task(handle_sensor_command(websocket_message, ws))
             await ws.send("OK")
         elif "car" in websocket_message and websocket_message in car_commands:
-            command = car_commands.get(websocket_message)
-            command()
-            await ws.send("OK")
+            if websocket_message == "car-forward" and get_distance_front() < 20:
+                print("Front obstacle detected, cannot move forward.")
+            elif websocket_message == "car-reverse" and get_distance_rear() < 20:
+                print("Rear obstacle detected, cannot move backward.")
+            else:
+                command = car_commands.get(websocket_message)
+                command()
+                await ws.send("OK")
         elif "speed" in websocket_message and websocket_message in speed_commands:
             robot_car.set_speed(speed_commands[websocket_message])
             await ws.send("OK")
 
         else:
             print(f"Command '{websocket_message}' not found.")
+
 
 
 async def handle_car_command(command):
