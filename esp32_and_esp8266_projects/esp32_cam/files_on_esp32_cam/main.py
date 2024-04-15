@@ -84,10 +84,8 @@ def server(pm):
     ss.bind(sa)
     ss.listen(1)  # serve 1 client at a time
     print("Start server", p)
-    if auth.on:
-        print(f"Try - http://{site.server}/login/{auth.pwd}")
-    else:
-        print(f"Try - http://{site.server}")
+    
+    print(f"Try - http://{site.server}")
     while True:
         ms = ""
         rq = []
@@ -117,10 +115,6 @@ def server(pm):
                         route((cs, ph))
                         continue
                     elif auth.ip == ca[0]:  # authenticated client
-                        route((cs, ph))
-                        continue
-                    elif ph.find("login/") >= 0:  # do login
-                        site.client = ca[0]
                         route((cs, ph))
                         continue
                     else:
@@ -159,12 +153,6 @@ if cam:
 
 # set auth
 auth.on = False
-# auth.on=False  # False: no authentication needed
-
-if auth.on:
-    auth.pwd = pwd()
-    auth.ip = ""
-    print(f"PWD: {auth.pwd}")
 
 # set preffered camera setting
 camera.framesize(9)
