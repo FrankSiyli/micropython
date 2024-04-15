@@ -63,10 +63,23 @@ margin: 2rem;
 text-align: right;
 }
 /**************
+   video-and-controls-container
+**************/
+.video-and-controls-container{
+  display: flex;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: center;
+}
+/**************
    images
 **************/
 .images{
-  width: 100vw;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
   height: 40vh;
   margin-top: 4rem;
   margin-bottom: 4rem;
@@ -74,6 +87,9 @@ text-align: right;
   justify-content: center;
   color: #fff;
   text-align: center;
+  border: 1px solid #fff;
+  z-index: 10;
+  font-size: xx-small;
 }
 .frontImage{
   width: 90vw;
@@ -89,6 +105,12 @@ text-align: right;
   border: 1px solid #fff;
   border-radius: 5px;
 }
+.camera-labels{
+  position: absolute;
+  border-radius: 5px;
+  padding: 2px;
+  z-index: 20;
+}
 /**************
    control-pads
 **************/
@@ -96,8 +118,7 @@ text-align: right;
    drive-pad
 **************/
 .control-pads {
-  width: 100vw;
-  height: 40vh;
+  height: 45vh;
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -107,7 +128,7 @@ text-align: right;
 .drive-pad {
   position: relative;
   width: 50vw;
-  max-width: 500px;
+  max-width: 400px;
   height: 40vh;
   overflow: hidden;
   margin-left: 1rem;
@@ -181,7 +202,8 @@ text-align: right;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 25vw;
+  width: 10vw;
+  min-width: 100px;
   height: 8vh;
   border-radius: 5px;
   overflow: hidden;
