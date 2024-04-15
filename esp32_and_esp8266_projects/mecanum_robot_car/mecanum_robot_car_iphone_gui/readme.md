@@ -29,6 +29,7 @@ The fantastic code base for a 2 wheel robot is from
 I adjusted it for my 4 wheel mecanum robot.
 <br>
 <br>
+Please also install the utemplate library on your ESP
 
 ## To use the robot car, follow these steps:
 
