@@ -24,70 +24,40 @@ function onClose(event) {
   setTimeout(initializeSocket, 2000);
 }
 
-function onMessage(event) {
-  var data = JSON.parse(event.data);
-  if (data.distance_front && data.distance_rear !== undefined) {
-    document.getElementById(
-      "distance-front-value"
-    ).innerText = `Front distance: ${data.distance_front} cm`;
-    document.getElementById(
-      "distance-rear-value"
-    ).innerText = `Rear distance: ${data.distance_rear} cm`;
-    document.getElementById(
-      "distance-left-value"
-    ).innerText = `Left distance: ${data.distance_left} cm`;
-    document.getElementById(
-      "distance-right-value"
-    ).innerText = `Right distance: ${data.distance_right} cm`;
-
-    if (data.distance_front < 20) {
-      sendMessage("car-stop");
-      document
-        .querySelector('.control[data-direction="forward"]')
-        .classList.add("disabled");
-    } else {
-      document
-        .querySelector('.control[data-direction="forward"]')
-        .classList.remove("disabled");
-    }
-
-    if (data.distance_rear < 20) {
-      sendMessage("car-stop");
-      document
-        .querySelector('.control[data-direction="reverse"]')
-        .classList.add("disabled");
-    } else {
-      document
-        .querySelector('.control[data-direction="reverse"]')
-        .classList.remove("disabled");
-    }
-
-    if (data.distance_left < 20) {
-      sendMessage("car-stop");
-      document
-        .querySelector('.control[data-direction="left"]')
-        .classList.add("disabled");
-    } else {
-      document
-        .querySelector('.control[data-direction="left"]')
-        .classList.remove("disabled");
-    }
-
-    if (data.distance_right < 20) {
-      sendMessage("car-stop");
-      document
-        .querySelector('.control[data-direction="right"]')
-        .classList.add("disabled");
-    } else {
-      document
-        .querySelector('.control[data-direction="right"]')
-        .classList.remove("disabled");
-    }
+function handleDirectionButton(distance, direction) {
+  const button = document.querySelector(
+    `.control[data-direction="${direction}"]`
+  );
+  if (distance < 20) {
+    sendMessage("car-stop");
+    button.classList.add("disabled");
+  } else {
+    button.classList.remove("disabled");
   }
 }
 
+function onMessage(event) {
+  var data = JSON.parse(event.data);
+  document.getElementById(
+    "distance-front-value"
+  ).innerText = `Front distance: ${data.distance_front} cm`;
+  document.getElementById(
+    "distance-rear-value"
+  ).innerText = `Rear distance: ${data.distance_rear} cm`;
+  document.getElementById(
+    "distance-left-value"
+  ).innerText = `Left distance: ${data.distance_left} cm`;
+  document.getElementById(
+    "distance-right-value"
+  ).innerText = `Right distance: ${data.distance_right} cm`;
+
+  handleDirectionButton(data.distance_front, "forward");
+  handleDirectionButton(data.distance_rear, "reverse");
+  handleDirectionButton(data.distance_left, "left");
+  handleDirectionButton(data.distance_right, "right");
+}
+
 function updateDistanceValue() {
-  // Send a message to request the distance value from the server
   websocket.send("request_distance");
 }
 
@@ -95,7 +65,6 @@ function sendMessage(message) {
   websocket.send(message);
 }
 
-// Speed Settings Handler
 var speedSettings = document.querySelectorAll(
   'input[type=radio][name="speed-settings"]'
 );
