@@ -73,7 +73,7 @@ class RobotCar:
         self.rear_left_motor_control_1.value(0)
         self.rear_left_motor_control_2.value(1)
 
-    def left(self):
+    def right(self):
         self.front_right_motor_enable_pin.duty_u16(self.speed)
         self.front_left_motor_enable_pin.duty_u16(self.speed)
         self.rear_right_motor_enable_pin.duty_u16(self.speed)
@@ -88,7 +88,7 @@ class RobotCar:
         self.rear_left_motor_control_1.value(0)
         self.rear_left_motor_control_2.value(1)
 
-    def right(self):
+    def left(self):
         self.front_right_motor_enable_pin.duty_u16(self.speed)
         self.front_left_motor_enable_pin.duty_u16(self.speed)
         self.rear_right_motor_enable_pin.duty_u16(self.speed)
@@ -103,7 +103,7 @@ class RobotCar:
         self.rear_left_motor_control_1.value(1)
         self.rear_left_motor_control_2.value(0)
 
-    def spinLeft(self):
+    def spinRight(self):
         self.front_right_motor_enable_pin.duty_u16(self.speed)
         self.front_left_motor_enable_pin.duty_u16(self.speed)
         self.rear_right_motor_enable_pin.duty_u16(self.speed)
@@ -118,7 +118,7 @@ class RobotCar:
         self.rear_left_motor_control_1.value(0)
         self.rear_left_motor_control_2.value(1)
 
-    def spinRight(self):
+    def spinLeft(self):
         self.front_right_motor_enable_pin.duty_u16(self.speed)
         self.front_left_motor_enable_pin.duty_u16(self.speed)
         self.rear_right_motor_enable_pin.duty_u16(self.speed)

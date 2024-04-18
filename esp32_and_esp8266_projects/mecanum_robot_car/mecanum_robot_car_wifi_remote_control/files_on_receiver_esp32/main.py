@@ -36,33 +36,12 @@ car_commands = {
     b"stop": robot_car.stop
 }
 
-async def blink_pin():
-    while True:
-        led.value(1) 
-        await asyncio.sleep(0.2) 
-        led.value(0)  
-        await asyncio.sleep(0.2)
-        led.value(1) 
-        await asyncio.sleep(0.2) 
-        led.value(0)  
-        await asyncio.sleep(0.5)
-        led.value(1) 
-        await asyncio.sleep(0.2) 
-        led.value(0)  
-        await asyncio.sleep(0.2)
-        led.value(1) 
-        await asyncio.sleep(0.2) 
-        led.value(0)  
-        await asyncio.sleep(0.5)
-        led.value(1) 
-        await asyncio.sleep(0.8) 
-        led.value(0)  
-        await asyncio.sleep(2) 
 
 while True:
     _, msg = esp.recv()
     if msg:  # msg == None if timeout in recv()
         if msg in car_commands:
             car_commands[msg]()
+            print(msg)
         else:
             print("Unknown message!")

@@ -15,7 +15,7 @@ esp = espnow.ESPNow()
 esp.active(True)
 
 # Define the MAC address of the receiving ESP32 (ESP32 B)
-peer = b'\xd8\xbc8\xe6\r\xec'
+peer = b'H\xe7)\x8cq\xb8'
 esp.add_peer(peer)
 
 # Configure button pins
@@ -34,9 +34,9 @@ button_commands = {
 
 # Initialize variables for debouncing and tracking button press duration
 last_button_states = [1] * len(button_pins)  # Assuming all buttons are not pressed initially
-debounce_delay = 50  # Adjust value to your needs
+debounce_delay = 10  # Adjust value to your needs
 press_start_time = [0] * len(button_pins)  # Tracks the time when each button was pressed
-stop_delay = 100  # Adjust value to your needs (in milliseconds)
+stop_delay = 10  # Adjust value to your needs (in milliseconds)
 
 while True:
     for index, button_pin in enumerate(buttons):
