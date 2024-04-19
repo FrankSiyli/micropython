@@ -2,6 +2,8 @@ from robot_car import RobotCar
 import network
 import espnow
 from machine import Pin
+import time
+import threading
 
 # A WLAN interface must be active to send/recv
 sta = network.WLAN(network.STA_IF)  # Or network.AP_IF
@@ -36,12 +38,42 @@ car_commands = {
     b"stop": robot_car.stop
 }
 
+# Define LED pin and set it as output
+led = Pin(13, Pin.OUT)
+
+# Define a function for blinking the LED
+def blink_led():
+    while True:
+        led.value(1)
+        time.sleep(0.2) 
+        led.value(0)
+        time.sleep(0.2)
+        led.value(1)
+        time.sleep(0.2)
+        led.value(0)
+        time.sleep(0.5)
+        led.value(1)
+        time.sleep(0.2)
+        led.value(0)
+        time.sleep(0.2)
+        led.value(1)
+        time.sleep(0.2)
+        led.value(0)
+        time.sleep(0.5)
+        led.value(1)
+        time.sleep(0.8)
+        led.value(0)
+        time.sleep(2)
+
+# Start the LED blinking thread
+blink_thread = threading.Thread(target=blink_led)
+blink_thread.daemon = True  # Daemonize the thread so it exits when the main program exits
+blink_thread.start()
 
 while True:
     _, msg = esp.recv()
     if msg:  # msg == None if timeout in recv()
         if msg in car_commands:
             car_commands[msg]()
-            print(msg)
         else:
             print("Unknown message!")
