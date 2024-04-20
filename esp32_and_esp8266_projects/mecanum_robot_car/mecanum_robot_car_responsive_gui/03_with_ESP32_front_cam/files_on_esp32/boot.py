@@ -1,9 +1,8 @@
-# boot.py -- run on boot-up
 import network, utime
 
-# Replace the following with your WIFI Credentials
-SSID = "your iphone hotspot name"
-SSI_PASSWORD = "your iphone hotspot password"
+PRIMARY_SSID = "ssid"
+PRIMARY_PASSWORD = "ssid password"
+
 
 
 def do_connect():
@@ -13,7 +12,7 @@ def do_connect():
     if not sta_if.isconnected():
         print("connecting to network...")
         sta_if.active(True)
-        sta_if.connect(SSID, SSI_PASSWORD)
+        sta_if.connect(PRIMARY_SSID, PRIMARY_PASSWORD)
         while not sta_if.isconnected():
             pass
     print("Connected! Network config:", sta_if.ifconfig())
@@ -21,3 +20,4 @@ def do_connect():
 
 print("Connecting to your wifi...")
 do_connect()
+
