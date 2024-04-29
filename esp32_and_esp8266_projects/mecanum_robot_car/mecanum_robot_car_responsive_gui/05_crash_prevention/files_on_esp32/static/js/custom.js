@@ -12,7 +12,8 @@ function initializeSocket() {
 function onLoad() {
   initializeSocket();
   setDefaultSpeed();
-  setInterval(updateDistanceValue, 500);
+  setInterval(updateDistanceValue, 250);
+  setInterval(updateCPUTemperature, 5000);
 }
 
 function onOpen(event) {
@@ -22,6 +23,10 @@ function onOpen(event) {
 function onClose(event) {
   console.log("Closing connection to server..");
   setTimeout(initializeSocket, 2000);
+}
+
+function updateCPUTemperature() {
+  websocket.send("request_cpu_temp");
 }
 
 function handleDirectionButton(distance, direction) {
@@ -55,6 +60,11 @@ function onMessage(event) {
   handleDirectionButton(data.distance_rear, "reverse");
   handleDirectionButton(data.distance_left, "left");
   handleDirectionButton(data.distance_right, "right");
+  if (data.cpu_temp) {
+    document.getElementById(
+      "cpu-temp"
+    ).innerText = `CPU temp: ${data.cpu_temp} °C`;
+  }
 }
 
 function updateDistanceValue() {

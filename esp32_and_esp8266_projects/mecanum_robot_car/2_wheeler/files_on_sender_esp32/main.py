@@ -15,7 +15,7 @@ esp = espnow.ESPNow()
 esp.active(True)
 
 # Define the MAC address of the receiving ESP32 (ESP32 B)
-peer = b'\xc8\xc9\xa3\x10\xcf\x1a'
+peer = b'\xc8\xc9\xa3\x10\xcc)'
 esp.add_peer(peer)
 
 # Configure button pins
@@ -70,3 +70,4 @@ while True:
 
             # Update the last button state
             last_button_states[index] = current_button_state
+
