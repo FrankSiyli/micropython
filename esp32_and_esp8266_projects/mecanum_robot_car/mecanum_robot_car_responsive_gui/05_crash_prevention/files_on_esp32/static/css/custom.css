@@ -5,7 +5,7 @@
   background-color: #1c1c1c;
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
-  user-select: none; 
+  user-select: none;
 }
 /**************
    speed-options
@@ -50,22 +50,21 @@ input[type="radio"] {
 /**************
    sensor-values
 **************/
-.sensor-values{
+.sensor-values {
   display: flex;
   justify-content: space-between;
-color: #fff;
-margin: 2rem;
+  color: #fff;
+  margin: 2rem;
 }
-.sensor-values-left{
-
+.sensor-values-left {
 }
-.sensor-values-right{
-text-align: right;
+.sensor-values-right {
+  text-align: right;
 }
 /**************
    video-and-controls-container
 **************/
-.video-and-controls-container{
+.video-and-controls-container {
   display: flex;
   margin-left: 1rem;
   margin-right: 1rem;
@@ -76,10 +75,10 @@ text-align: right;
 /**************
    images
 **************/
-.images{
+.images {
   position: relative;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 1rem;
+  margin-right: 1rem;
   height: 40vh;
   margin-top: 4rem;
   margin-bottom: 4rem;
@@ -91,21 +90,21 @@ text-align: right;
   z-index: 10;
   font-size: xx-small;
 }
-.frontImage{
+.frontImage {
   width: 90vw;
   max-width: 800px;
   height: 100%;
   border: 1px solid #fff;
   border-radius: 5px;
 }
-.rearImage{
+.rearImage {
   width: 90vw;
   max-width: 800px;
   height: 100%;
   border: 1px solid #fff;
   border-radius: 5px;
 }
-.camera-labels{
+.camera-labels {
   position: absolute;
   border-radius: 5px;
   padding: 2px;
@@ -127,8 +126,8 @@ text-align: right;
 }
 .drive-pad {
   position: relative;
-  width: 50vw;
-  max-width: 400px;
+  width: 30vw;
+  max-width: 250px;
   height: 40vh;
   overflow: hidden;
   margin-left: 1rem;
@@ -141,13 +140,13 @@ text-align: right;
 }
 .drive-pad a.left,
 .drive-pad a.right {
-  width: 40%;
+  width: 30%;
   max-width: 150px;
   height: 30%;
   max-height: 200px;
 }
 .drive-pad a.up,
-.drive-pad a.down{
+.drive-pad a.down {
   width: 50%;
   max-width: 200px;
   height: 30%;
